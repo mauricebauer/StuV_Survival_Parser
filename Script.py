@@ -9,8 +9,9 @@ lectures = [lec1]
 
 if __name__ == "__main__":
     if(len(sys.argv) <= 1):
-        print("No additional course mentioned, assuming '" + course + "'")
+        print("No command line parameter detected, assuming '" + course + "'")
     else:
+        print("Using course: " + sys.argv[1])
         course = sys.argv[1]
 
     exporter = ICalExporter(lectures)
