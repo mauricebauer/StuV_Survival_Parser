@@ -1,7 +1,8 @@
 from Lecture import Lecture
+from html.parser import HTMLParser
 
 
-class HTMLParser:
+class StuVParser:
     def __init__(self, html: str):
         self.html = html
 

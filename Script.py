@@ -1,6 +1,6 @@
 from Lecture import Lecture
 from ICalExporter import ICalExporter
-from HTMLParser import HTMLParser
+from StuVParser import StuVParser
 import sys
 from urllib.request import Request, urlopen
 
@@ -20,7 +20,7 @@ if __name__ == "__main__":
     resp = urlopen(req).read()  # Contains the HTML as String
     resp.decode("utf-8")
 
-    parser = HTMLParser(str(resp))
+    parser = StuVParser(str(resp))
     lectures = parser.parse()  # List holding the lecture objects
 
     exporter = ICalExporter(lectures)
