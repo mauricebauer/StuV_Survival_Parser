@@ -18,9 +18,9 @@ if __name__ == "__main__":
     # Necessary, because insted python is blocked
     req.add_header('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; Win64; x64)')
     resp = urlopen(req).read()  # Contains the HTML as String
-    resp.decode("utf-8")
+    respUnicode = resp.decode("utf-8")
 
-    parser = StuVParser(str(resp))
+    parser = StuVParser(respUnicode)
     lectures = parser.parse()  # List holding the lecture objects
 
     exporter = ICalExporter(lectures)
