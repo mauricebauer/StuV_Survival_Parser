@@ -2,3 +2,4 @@
 .mypy_cache/
 credentials.json
 token.json
+__pycache__/
