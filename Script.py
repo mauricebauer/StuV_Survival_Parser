@@ -1,11 +1,10 @@
 from Lecture import Lecture
 from ICalExporter import ICalExporter
+from HTMLParser import HTMLParser
 import sys
+from urllib.request import Request, urlopen
 
 course = 'INF17A'  # Default value of course
-lec1 = Lecture("Testvorlesung", "A0.100", "Dr. Kohlmüller",
-               "2018-10-17T10:58:47+02:00", "2018-10-17T12:58:47+02:00")
-lectures = [lec1]
 
 if __name__ == "__main__":
     if(len(sys.argv) <= 1):
@@ -13,6 +12,16 @@ if __name__ == "__main__":
     else:
         print("Using course: " + sys.argv[1])
         course = sys.argv[1]
+
+    req = Request(
+        "https://stuv-mosbach.de/survival/index.php?main=8&course=" + course)
+    # Necessary, because insted python is blocked
+    req.add_header('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; Win64; x64)')
+    resp = urlopen(req).read()  # Contains the HTML as String
+    resp.decode("utf-8")
+
+    parser = HTMLParser(str(resp))
+    lectures = parser.parse()  # List holding the lecture objects
 
     exporter = ICalExporter(lectures)
     exporter.exportICS('calendar.ics')
