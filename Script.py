@@ -1,9 +1,17 @@
 from Lecture import Lecture
 from ICalExporter import ICalExporter
+import sys
 
-lec1 = Lecture("Testvorlesung", "A0.100", "Dr. Kohlmüller", "2018-10-17T10:58:47+02:00", "2018-10-17T12:58:47+02:00")
+course = 'INF17A'  # Default value of course
+lec1 = Lecture("Testvorlesung", "A0.100", "Dr. Kohlmüller",
+               "2018-10-17T10:58:47+02:00", "2018-10-17T12:58:47+02:00")
 lectures = [lec1]
 
 if __name__ == "__main__":
+    if(len(sys.argv) <= 1):
+        print("No additional course mentioned, assuming '" + course + "'")
+    else:
+        course = sys.argv[1]
+
     exporter = ICalExporter(lectures)
     exporter.exportICS('calendar.ics')
