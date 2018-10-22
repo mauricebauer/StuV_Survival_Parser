@@ -1,6 +1,7 @@
 from Lecture import Lecture
 from ICalExporter import ICalExporter
 from StuVParser import StuVParser
+from GoogleCalendarAPI import GoogleCalendarAPI
 import sys
 from urllib.request import Request, urlopen
 
@@ -22,13 +23,20 @@ if __name__ == "__main__":
 
     parser = StuVParser(respUnicode)
     lectures = parser.parse()  # List holding the lecture objects
+
+    # Delete previous lectures
+    print('Deleting previous lectures...')
+    GoogleCalendarAPI.deletePrevEvents()
+
     # Clear duplicated lectures with slightly different room
     for currentLecture in lectures:
+        print('Adding lectures...')
         for otherLecture in lectures:
             if (otherLecture.startTime == currentLecture.startTime and otherLecture.endTime == currentLecture.endTime and otherLecture.name == currentLecture.name and otherLecture != currentLecture):
                 currentLecture.room += (", " + otherLecture.room)
                 lectures.remove(otherLecture)
-        print("Lecture: " + currentLecture.name + ", " + currentLecture.lecturer + ", " + currentLecture.room + ", " + currentLecture.startTime + ", " + currentLecture.endTime)
+        #print("Lecture: " + currentLecture.name + ", " + currentLecture.lecturer + ", " + currentLecture.room + ", " + currentLecture.startTime + ", " + currentLecture.endTime)
+        GoogleCalendarAPI.addEvent(currentLecture)
 
     exporter = ICalExporter(lectures)
     exporter.exportICS('calendar.ics')
