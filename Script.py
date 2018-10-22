@@ -6,6 +6,7 @@ from GoogleCalendarAPI import GoogleCalendarAPI
 from urllib.request import Request, urlopen
 import sys
 
+
 course = 'INF17A'  # Default value of course
 
 if __name__ == "__main__":
@@ -31,17 +32,20 @@ if __name__ == "__main__":
     GoogleCalendarAPI.deletePrevEvents()
 
     # Clear duplicated lectures with slightly different room
-    print('Adding lectures...')
+    print('Removing duplicates...')
     for currentLecture in lectures:
         for otherLecture in lectures:
             if (otherLecture.startTime == currentLecture.startTime and otherLecture.endTime == currentLecture.endTime and otherLecture.name == currentLecture.name and otherLecture.room != currentLecture.room):
                 currentLecture.room += (", " + otherLecture.room)
                 lectures.remove(otherLecture)
-        #print("Lecture: " + currentLecture.name + ", " + currentLecture.lecturer + ", " + currentLecture.room + ", " + currentLecture.startTime + ", " + currentLecture.endTime)
+
+    # Clear duplicated lectures with slightly different room
+    print('Adding lectures...')
+    for currentLecture in lectures:
         GoogleCalendarAPI.addEvent(currentLecture)
 
     #exporter = ICalExporter(lectures)
     #exporter.exportICS('calendar.ics')
 
     scriptEnd = datetime.now()
-    print('Finished Synchonisation in ' + str(scriptEnd - scriptStart))
+    print('Finished Synchonisation in ' + str(scriptEnd - scriptStart) + '[HH:MM:SS:MsMs]')
