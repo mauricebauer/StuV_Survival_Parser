@@ -25,7 +25,7 @@ if __name__ == "__main__":
     # Clear duplicated lectures with slightly different room
     for currentLecture in lectures:
         for otherLecture in lectures:
-            if (otherLecture.startTime == currentLecture.startTime and otherLecture.endTime == currentLecture.endTime and otherLecture.name == currentLecture.name and otherLecture != currentLecture):
+            if (otherLecture.startTime == currentLecture.startTime and otherLecture.endTime == currentLecture.endTime and otherLecture.name == currentLecture.name and otherLecture.room != currentLecture.room):
                 currentLecture.room += (", " + otherLecture.room)
                 lectures.remove(otherLecture)
         print("Lecture: " + currentLecture.name + ", " + currentLecture.lecturer + ", " + currentLecture.room + ", " + currentLecture.startTime + ", " + currentLecture.endTime)
