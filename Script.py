@@ -22,6 +22,13 @@ if __name__ == "__main__":
 
     parser = StuVParser(respUnicode)
     lectures = parser.parse()  # List holding the lecture objects
+    # Clear duplicated lectures with slightly different room
+    for currentLecture in lectures:
+        for otherLecture in lectures:
+            if (otherLecture.startTime == currentLecture.startTime and otherLecture.endTime == currentLecture.endTime and otherLecture.name == currentLecture.name and otherLecture != currentLecture):
+                currentLecture.room += (", " + otherLecture.room)
+                lectures.remove(otherLecture)
+        print("Lecture: " + currentLecture.name + ", " + currentLecture.lecturer + ", " + currentLecture.room + ", " + currentLecture.startTime + ", " + currentLecture.endTime)
 
     exporter = ICalExporter(lectures)
     exporter.exportICS('calendar.ics')
