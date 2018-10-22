@@ -60,4 +60,3 @@ class GoogleCalendarAPI:
         }
 
         event = service.events().insert(calendarId=CALENDARID, body=event).execute()
-        print ('Event created')
