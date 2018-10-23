@@ -42,7 +42,7 @@ class GoogleCalendarAPI:
         event = {
           'summary': lectureEvent.name,
           'location': lectureEvent.room,
-          'description': 'Dozent: ' + lectureEvent.lecturer,
+          'description': 'Dozent: ' + lectureEvent.lecturer + "\nSync: " + datetime.datetime.now().isoformat(),
           'start': {
             'dateTime': lectureEvent.startTime + ":00",
             'timeZone': 'Europe/Berlin',
