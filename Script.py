@@ -14,10 +14,11 @@ onlyFutureLectures = True  # Default value of onlyFutureLectures
 if __name__ == "__main__":
     scriptStart = datetime.now()
     if(len(sys.argv) <= 1):
-        print("No command line parameter detected, assuming '" + course + "'")
+        print(str(datetime.now()) + " - No command line parameter detected, assuming '" + course + "' and synchonising only future lectures.")
     else:
-        print("Using course: " + sys.argv[1])
+        print(str(datetime.now()) + " - Using course: " + sys.argv[1])
         course = sys.argv[1]
+        onlyFutureLectures = sys.argv[2]
 
     req = Request(
         "https://stuv-mosbach.de/survival/index.php?main=8&course=" + course)
@@ -30,11 +31,11 @@ if __name__ == "__main__":
     lectures = parser.parse()  # List holding the lecture objects
 
     # Delete previous lectures
-    print('Deleting previous lectures...')
+    print(str(datetime.now()) + ' - Deleting previous lectures...')
     GoogleCalendarAPI.deletePrevEvents(onlyFutureLectures, scriptStart)
 
     # Clear duplicated lectures with slightly different room
-    print('Removing duplicates...')
+    print(str(datetime.now()) + ' - Removing duplicates...')
     for currentLecture in lectures:
         for otherLecture in lectures:
             if (otherLecture.startTime == currentLecture.startTime and otherLecture.endTime == currentLecture.endTime and otherLecture.name == currentLecture.name and otherLecture.room != currentLecture.room):
@@ -43,14 +44,14 @@ if __name__ == "__main__":
 
     # Remove past lectures (if wanted)
     if (onlyFutureLectures):
-        print('Removing past lectures...')
+        print(str(datetime.now()) + ' - Removing past lectures...')
         for currentLecture in lectures[:]:
             lectureStartTime = dateutil.parser.parse(currentLecture.startTime)
             if (lectureStartTime < scriptStart):
                 lectures.remove(currentLecture)
 
     # Clear duplicated lectures with slightly different room
-    print('Adding lectures...')
+    print(str(datetime.now()) + ' - Adding lectures...')
     for currentLecture in lectures:
         GoogleCalendarAPI.addEvent(currentLecture)
 
@@ -58,4 +59,4 @@ if __name__ == "__main__":
     #exporter.exportICS('calendar.ics')
 
     scriptEnd = datetime.now()
-    print('Finished Synchonisation in ' + str(scriptEnd - scriptStart) + '[HH:MM:SS:MsMs]')
+    print(str(datetime.now()) + ' - Finished Synchonisation in ' + str(scriptEnd - scriptStart) + '[HH:MM:SS:MsMs]')
