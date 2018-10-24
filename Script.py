@@ -14,9 +14,9 @@ onlyFutureLectures = True  # Default value of onlyFutureLectures
 if __name__ == "__main__":
     scriptStart = datetime.now()
     if(len(sys.argv) <= 1):
-        print(str(datetime.now()) + " - No command line parameter detected, assuming '" + course + "' and synchonising only future lectures.")
+        print(datetime.now().strftime("%Y-%m-%d %H:%M:%S") + " - No command line parameter detected, assuming '" + course + "' and synchonising only future lectures.")
     else:
-        print(str(datetime.now()) + " - Using course: " + sys.argv[1])
+        print(datetime.now().strftime("%Y-%m-%d %H:%M:%S") + " - Using course: " + sys.argv[1])
         course = sys.argv[1]
         onlyFutureLectures = sys.argv[2]
 
@@ -31,11 +31,11 @@ if __name__ == "__main__":
     lectures = parser.parse()  # List holding the lecture objects
 
     # Delete previous lectures
-    print(str(datetime.now()) + ' - Deleting previous lectures...')
+    print(datetime.now().strftime("%Y-%m-%d %H:%M:%S") + ' - Deleting previous lectures...')
     GoogleCalendarAPI.deletePrevEvents(onlyFutureLectures, scriptStart)
 
     # Clear duplicated lectures with slightly different room
-    print(str(datetime.now()) + ' - Removing duplicates...')
+    print(datetime.now().strftime("%Y-%m-%d %H:%M:%S") + ' - Removing duplicates...')
     for currentLecture in lectures:
         for otherLecture in lectures:
             if (otherLecture.startTime == currentLecture.startTime and otherLecture.endTime == currentLecture.endTime and otherLecture.name == currentLecture.name and otherLecture.room != currentLecture.room):
@@ -44,14 +44,14 @@ if __name__ == "__main__":
 
     # Remove past lectures (if wanted)
     if (onlyFutureLectures):
-        print(str(datetime.now()) + ' - Removing past lectures...')
+        print(datetime.now().strftime("%Y-%m-%d %H:%M:%S") + ' - Removing past lectures...')
         for currentLecture in lectures[:]:
             lectureStartTime = dateutil.parser.parse(currentLecture.startTime)
             if (lectureStartTime < scriptStart):
                 lectures.remove(currentLecture)
 
     # Clear duplicated lectures with slightly different room
-    print(str(datetime.now()) + ' - Adding lectures...')
+    print(datetime.now().strftime("%Y-%m-%d %H:%M:%S") + ' - Adding lectures...')
     for currentLecture in lectures:
         GoogleCalendarAPI.addEvent(currentLecture)
 
@@ -59,4 +59,4 @@ if __name__ == "__main__":
     #exporter.exportICS('calendar.ics')
 
     scriptEnd = datetime.now()
-    print(str(datetime.now()) + ' - Finished Synchonisation in ' + str(scriptEnd - scriptStart) + '[HH:MM:SS:MsMs]')
+    print(datetime.now().strftime("%Y-%m-%d %H:%M:%S") + ' - Finished Synchonisation in ' + str(scriptEnd - scriptStart) + ' [HH:MM:SS.MsMs]')

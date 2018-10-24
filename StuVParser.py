@@ -1,3 +1,4 @@
+from datetime import datetime
 from Lecture import Lecture
 from html.parser import HTMLParser
 from States import States
@@ -36,10 +37,10 @@ class InternalParser(HTMLParser):
         global currentState, currentDate, currentLecture, Lectures
         if(currentState == States.START):
             if(data.startswith("Vorlesungen zuletzt synchronisiert:")):
-                print(data)
+                print(datetime.now().strftime("%Y-%m-%d %H:%M:%S") + " - " + data)
                 currentState = States.LASTSYNCHRONIZED
         elif (currentState == States.LASTSYNCHRONIZED):
-            print("Data: States.LASTSYNCHRONIZED" + data)
+            print(datetime.now().strftime("%Y-%m-%d %H:%M:%S") + " - Data: States.LASTSYNCHRONIZED" + data)
         elif (currentState == States.DATE):
             match = re.search('(3[01]|[12][0-9]|0[1-9])\.(1[012]|0?[1-9])\.((?:19|20)\d{2})', data)
             if(match != None):
