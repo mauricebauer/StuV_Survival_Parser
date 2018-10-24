@@ -4,10 +4,12 @@ from ICalExporter import ICalExporter
 from StuVParser import StuVParser
 from GoogleCalendarAPI import GoogleCalendarAPI
 from urllib.request import Request, urlopen
+import dateutil.parser
 import sys
 
 
 course = 'INF17A'  # Default value of course
+onlyFutureLectures = True  # Default value of onlyFutureLectures
 
 if __name__ == "__main__":
     scriptStart = datetime.now()
@@ -29,7 +31,7 @@ if __name__ == "__main__":
 
     # Delete previous lectures
     print('Deleting previous lectures...')
-    GoogleCalendarAPI.deletePrevEvents()
+    GoogleCalendarAPI.deletePrevEvents(onlyFutureLectures, scriptStart)
 
     # Clear duplicated lectures with slightly different room
     print('Removing duplicates...')
@@ -38,6 +40,14 @@ if __name__ == "__main__":
             if (otherLecture.startTime == currentLecture.startTime and otherLecture.endTime == currentLecture.endTime and otherLecture.name == currentLecture.name and otherLecture.room != currentLecture.room):
                 currentLecture.room += (", " + otherLecture.room)
                 lectures.remove(otherLecture)
+
+    # Remove past lectures (if wanted)
+    if (onlyFutureLectures):
+        print('Removing past lectures...')
+        for currentLecture in lectures[:]:
+            lectureStartTime = dateutil.parser.parse(currentLecture.startTime)
+            if (lectureStartTime < scriptStart):
+                lectures.remove(currentLecture)
 
     # Clear duplicated lectures with slightly different room
     print('Adding lectures...')

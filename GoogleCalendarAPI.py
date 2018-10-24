@@ -3,6 +3,7 @@ from googleapiclient.discovery import build
 from httplib2 import Http
 from oauth2client import file, client, tools
 import datetime
+import dateutil.parser
 
 
 # If modifying these scopes, delete the file token.json.
@@ -11,7 +12,8 @@ CALENDARID = 'huqusdff4jte5j3dubd343ikmo@group.calendar.google.com'
 
 class GoogleCalendarAPI:
 
-    def deletePrevEvents():
+    def deletePrevEvents(removeOldLectures, scriptStart):
+        # Standard Google-Authentification
         global CALENDARID, SCOPES
         store = file.Storage('token.json')
         creds = store.get()
@@ -25,12 +27,18 @@ class GoogleCalendarAPI:
         while True:
             events = service.events().list(calendarId=CALENDARID, pageToken=page_token).execute()
             for event in events['items']:
-                service.events().delete(calendarId=CALENDARID, eventId=event['id']).execute()
+                eventStartTime = dateutil.parser.parse(event['start']['dateTime'])
+                eventStartTime = eventStartTime.replace(tzinfo=None)
+                if (removeOldLectures and eventStartTime > scriptStart):
+                    service.events().delete(calendarId=CALENDARID, eventId=event['id']).execute()
+                elif (removeOldLectures == False):
+                    service.events().delete(calendarId=CALENDARID, eventId=event['id']).execute()
             page_token = events.get('nextPageToken')
             if not page_token:
                 break
 
     def addEvent(lectureEvent):
+        # Standard Google-Authentification
         global CALENDARID, SCOPES
         store = file.Storage('token.json')
         creds = store.get()
@@ -39,6 +47,7 @@ class GoogleCalendarAPI:
             creds = tools.run_flow(flow, store)
         service = build('calendar', 'v3', http=creds.authorize(Http()))
 
+        # Add Events
         event = {
           'summary': lectureEvent.name,
           'location': lectureEvent.room,
