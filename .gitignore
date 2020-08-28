@@ -5,3 +5,4 @@ token.json
 __pycache__/
 .DS_Store
 *.ics
+pythonenv3.8/
